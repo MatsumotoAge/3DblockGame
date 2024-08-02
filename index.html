@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3Dブロックゲーム</title>
+<style>
+    body { 
+      margin: 0; 
+      overflow: hidden; 
+      font-family: 'Arial', sans-serif;
+      background-color: #f0f0f0;
+      color: #333;
+    }
+    canvas { display: block; }
+    #ui {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 12px;
+      border-radius: 10px;
+      z-index: 1000;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 230px;
+    }
+    #textures {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+    #textures button {
+      width: 40px;
+      height: 40px;
+      background-size: cover;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    #textures button:hover {
+      transform: scale(1.1);
+    }
+    #textures button.selected {
+      box-shadow: 0 0 0 2px #555;
+    }
+    .action-button {
+      display: block;
+      width: 100%;
+      padding: 8px;
+      margin-top: 8px;
+      cursor: pointer;
+      background-color: #555;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+    .action-button:hover {
+      background-color: #333;
+    }
+    #drop-zone {
+      border: 2px dashed #555;
+      border-radius: 8px;
+      width: calc(100% - 4px);
+      padding: 12px 0;
+      text-align: center;
+      margin-top: 12px;
+      transition: background-color 0.2s;
+    }
+    #drop-zone.dragover {
+      background-color: rgba(85, 85, 85, 0.1);
+    }
+    .input-container {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+    }
+    .input-container label {
+      flex: 1;
+      margin-right: 8px;
+      font-size: 0.85em;
+    }
+    .input-container input[type="number"],
+    .input-container input[type="color"] {
+      width: 60px;
+      padding: 2px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+    </style>
+</head>
+<body>
+<div id="ui">
+  <div id="textures"></div>
+  <button id="eraser" class="action-button">消しゴム</button>
+  <button id="exportPNG" class="action-button">PNG出力</button>
+  <div class="input-container">
+    <label for="skyColor">空の色:</label>
+    <input type="color" id="skyColor" value="#87CEEB">
+  </div>
+  <div class="input-container">
+    <label for="indirectLight">間接光の強さ:</label>
+    <input type="number" id="indirectLight" min="0" max="1" step="0.1" value="0.5">
+  </div>
+  <div class="input-container">
+    <label for="sunIntensity">太陽の強さ:</label>
+    <input type="number" id="sunIntensity" min="0" max="2" step="0.1" value="1.0">
+  </div>
+  <div class="input-container">
+    <label for="focusDistance">合焦面の距離:</label>
+    <input type="number" id="focusDistance" min="0.1" max="2000" step="0.1" value="10">
+  </div>
+  <div class="input-container">
+    <label for="fStop">F値:</label>
+    <input type="number" id="fStop" min="0.1" max="22" step="0.1" value="2.8">
+  </div>
+  <div class="input-container">
+    <label for="fov">視野角 (FOV):</label>
+    <input type="number" id="fov" min="1" max="179" step="1" value="75">
+  </div>
+  <div id="drop-zone">ここにテクスチャをドラッグ＆ドロップ</div>
+  <button id="saveGame" class="action-button">ゲームを保存</button>
+  <input type="file" id="loadGame" accept=".json" style="display: none;">
+  <button id="loadGameButton" class="action-button">ゲームを読み込む</button>
+</div>
+<script type="importmap">
+{
+"imports": {
+ "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+ "three/examples/jsm/controls/OrbitControls": "https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js",
+ "three/examples/jsm/postprocessing/EffectComposer": "https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js",
+ "three/examples/jsm/postprocessing/RenderPass": "https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/RenderPass.js",
+ "three/examples/jsm/postprocessing/SSAOPass": "https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/SSAOPass.js",
+ "three/examples/jsm/postprocessing/BokehPass": "https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/BokehPass.js"
+}
+}
+</script>
+<script type="module" src="game.js"></script>
+</body>
+</html>
